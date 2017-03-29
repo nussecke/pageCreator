@@ -1,0 +1,535 @@
+<?php
+$orderDirection = ($this->order == 'ASC') ? 'DESC' : 'ASC';
+$form = $this->form;
+
+$form->setAttribute('action', $this->url('ordermanagement/ordermanagementaction/ordermanagementpage/ordermanagementorderby/ordermanagementorder', array(
+    'action' => 'index',
+    'page' => $this->currentPage,
+    'orderby' => $this->orderby,
+    'order' => $this->order
+)));
+
+$stdUrl = 'ordermanagement/ordermanagementaction/ordermanagementpage/ordermanagementorderby/ordermanagementorder/ordermanagementresults';
+$searchUrl = 'ordermanagement/ordermanagementaction/ordermanagementpage/ordermanagementorderby/ordermanagementorder/ordermanagementresults/ordermanagementsearch';
+$optionUrl = 'ordermanagement/ordermanagementordermanagementid/ordermanagementaction';
+
+$form->setAttribute('class', 'navbar-search');
+$form->prepare();
+$userPermissions = $this->AllcopIAM_Helper_Acl();
+$route = $this->Application_Helper_GetRoute();
+?>
+<?php if ($this->flashMessenger()->hasSuccessMessages()) : ?>
+    <div class="clearfix alert alert-success">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <?php foreach ($this->flashMessenger()->getSuccessMessages() as $message) ?>
+        <strong><?= $this->translate('Info', 'AllcopOrderManagement') ?></strong><br/>
+        <?= $this->translate($message, 'AllcopOrderManagement') ?>
+    </div>
+<?php endif; ?>
+<?php if ($this->flashMessenger()->hasErrorMessages()) : ?>
+    <div class="clearfix alert alert-error">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <?php foreach ($this->flashMessenger()->getErrorMessages() as $message) ?>
+        <strong><?= $this->translate('Error', 'AllcopOrderManagement') ?></strong><br/>
+        <?= $this->translate($message, 'AllcopOrderManagement') ?>
+    </div>
+<?php endif; ?>
+<?php if ($this->flashMessenger()->hasInfoMessages()) : ?>
+    <div class="clearfix alert alert-info">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <?php foreach ($this->flashMessenger()->getInfoMessages() as $message) ?>
+        <strong><?= $this->translate('Info', 'AllcopOrderManagement') ?></strong><br/>
+        <?php #Info message is translated in directly in UserController ?>
+        <?= $message ?>
+    </div>
+<?php endif; ?>
+<div class="headerbar-wrapper">
+    <div class="headerbar">
+        <h1>
+            <i class="active-square pink"></i>
+            <a href="<?= $this->url('ordermanagement') ?>">
+                <?= $this->translate('Order Management', 'AllcopOrderManagement') ?>
+            </a>
+        </h1>
+
+        <div class="pull-right">
+        </div>
+
+    </div>
+    <div class="headerbar">
+
+        <!-- <div class="pull-left">
+            <div id="pagination-results">
+                <select class="selectpicker-results">
+                    <option <?/*= $this->resultsPerPage == 10 ? 'selected="selected"' : '' */?>
+                        data-url="<?/*= $resultsPerPageUrl */?>10">10
+                    </option>
+                    <option <?/*= $this->resultsPerPage == 25 ? 'selected="selected"' : '' */?>
+                        data-url="<?/*= $resultsPerPageUrl */?>25">25
+                    </option>
+                    <option <?/*= $this->resultsPerPage == 50 ? 'selected="selected"' : '' */?>
+                        data-url="<?/*= $resultsPerPageUrl */?>50">50
+                    </option>
+                </select>
+                <span><?/*= $this->translate('Results per page', 'AllcopOrderManagement'); */?></span>
+            </div>
+        </div>-->
+
+        <div class="pull-right">
+            <button style="float:right; margin-left: 5px" class="btn add-on hide" id="filter-search-submit"
+                    data-href="<?=
+                    $this->url('ordermanagement/ordermanagementaction/ordermanagementpage/ordermanagementorderby/ordermanagementorder/ordermanagementresults',
+                        array(
+                            'action' => 'index',
+                            'page' => $this->currentPage,
+                            'orderby' => $this->orderby,
+                            'order' => $this->order,
+                            'results' => $this->resultsPerPage
+                        )) ?>">
+                <i class="icon-search"></i>
+            </button>
+
+            <span class="searchkey">Suchbegriff:</span>
+            <input id="search-ordermanagement" type="text" class="search-query"
+                   placeholder="<?= $this->translate('Search', 'AllcopOrderManagement') ?>"
+                   name="filter-search" <?php if (isset($route['search']))
+                echo 'value="' . $this->search . '"' ?> />
+
+        </div>
+    </div>
+</div>
+<!-- end .headerbar -->
+<div class="window">
+<div class="xhr-loading">
+</div>
+<div class="xhr-content">
+<?php if (isset($this->pagination)): ?>
+    <?php if ($this->pagination->getTotalItemCount() > 0): ?>
+        <table class="table table-striped centered interactive centered">
+        <thead>
+        <tr>
+        <th>
+            <?php if ($this->search != null): ?>
+                <a class="interactive-sort portalid" href="<?=
+                $this->url($searchUrl,
+                    array(
+                        'action' => 'index',
+                        'page' => $this->currentPage,
+                        'orderby' => 'portalid',
+                        'order' => $orderDirection,
+                        'search' => $this->search,
+                        'results' => $this->resultsPerPage
+                    )) ?>">
+                    <?= $this->translate('Portal Id', 'AllcopOrderManagement') ?>
+                </a>
+            <?php else: ?>
+                <a class="interactive-sort portalid" href="<?=
+                $this->url($stdUrl,
+                    array(
+                        'action' => 'index',
+                        'page' => $this->currentPage,
+                        'orderby' => 'portalid',
+                        'order' => $orderDirection,
+                        'results' => $this->resultsPerPage
+                    )) ?>">
+                    <?= $this->translate('Portal Id', 'AllcopOrderManagement') ?>
+                </a>
+            <?php endif; ?>
+        </th>
+        <th>
+            <?php if ($this->search != null): ?>
+                <a class="interactive-sort orderid" href="<?=
+                $this->url($searchUrl,
+                    array(
+                        'action' => 'index',
+                        'page' => $this->currentPage,
+                        'orderby' => 'orderid',
+                        'order' => $orderDirection,
+                        'search' => $this->search,
+                        'results' => $this->resultsPerPage
+                    )) ?>">
+                    <?= $this->translate('Order Id', 'AllcopOrderManagement') ?>
+                </a>
+            <?php else: ?>
+                <a class="interactive-sort orderid" href="<?=
+                $this->url($stdUrl,
+                    array(
+                        'action' => 'index',
+                        'page' => $this->currentPage,
+                        'orderby' => 'orderid',
+                        'order' => $orderDirection,
+                        'results' => $this->resultsPerPage
+                    )) ?>">
+                    <?= $this->translate('Order Id', 'AllcopOrderManagement') ?>
+                </a>
+            <?php endif; ?>
+        </th>
+        <th>
+            <?php if ($this->search != null): ?>
+                <a class="interactive-sort transmitted" href="<?=
+                $this->url($searchUrl,
+                    array(
+                        'action' => 'index',
+                        'page' => $this->currentPage,
+                        'orderby' => 'transmitted',
+                        'order' => $orderDirection,
+                        'search' => $this->search,
+                        'results' => $this->resultsPerPage
+                    )) ?>">
+                    <?= $this->translate('Transmitted', 'AllcopOrderManagement') ?>
+                </a>
+            <?php else: ?>
+                <a class="interactive-sort transmitted" href="<?=
+                $this->url($stdUrl,
+                    array(
+                        'action' => 'index',
+                        'page' => $this->currentPage,
+                        'orderby' => 'transmitted',
+                        'order' => $orderDirection,
+                        'results' => $this->resultsPerPage
+                    )) ?>">
+                    <?= $this->translate('Transmitted', 'AllcopOrderManagement') ?>
+                </a>
+            <?php endif; ?>
+        </th>
+        <th>
+            <?php if ($this->search != null): ?>
+                <a class="interactive-sort firstname" href="<?=
+                $this->url($searchUrl,
+                    array(
+                        'action' => 'index',
+                        'page' => $this->currentPage,
+                        'orderby' => 'firstname',
+                        'order' => $orderDirection,
+                        'search' => $this->search,
+                        'results' => $this->resultsPerPage
+                    )) ?>">
+                    <?= $this->translate('Firstname', 'AllcopOrderManagement') ?>
+                </a>
+            <?php else: ?>
+                <a class="interactive-sort firstname" href="<?=
+                $this->url($stdUrl,
+                    array(
+                        'action' => 'index',
+                        'page' => $this->currentPage,
+                        'orderby' => 'firstname',
+                        'order' => $orderDirection,
+                        'results' => $this->resultsPerPage
+                    )) ?>">
+                    <?= $this->translate('Firstname', 'AllcopOrderManagement') ?>
+                </a>
+            <?php endif; ?>
+        </th>
+        <th>
+            <?php if ($this->search != null): ?>
+                <a class="interactive-sort lastname" href="<?=
+                $this->url($searchUrl,
+                    array(
+                        'action' => 'index',
+                        'page' => $this->currentPage,
+                        'orderby' => 'lastname',
+                        'order' => $orderDirection,
+                        'search' => $this->search,
+                        'results' => $this->resultsPerPage
+                    )) ?>">
+                    <?= $this->translate('Lastname', 'AllcopOrderManagement') ?>
+                </a>
+            <?php else: ?>
+                <a class="interactive-sort lastname" href="<?=
+                $this->url($stdUrl,
+                    array(
+                        'action' => 'index',
+                        'page' => $this->currentPage,
+                        'orderby' => 'lastname',
+                        'order' => $orderDirection,
+                        'results' => $this->resultsPerPage
+                    )) ?>">
+                    <?= $this->translate('Lastname', 'AllcopOrderManagement') ?>
+                </a>
+            <?php endif; ?>
+        </th>
+        <th>
+            <?php if ($this->search != null): ?>
+                <a class="interactive-sort email" href="<?=
+                $this->url($searchUrl,
+                    array(
+                        'action' => 'index',
+                        'page' => $this->currentPage,
+                        'orderby' => 'email',
+                        'order' => $orderDirection,
+                        'search' => $this->search,
+                        'results' => $this->resultsPerPage
+                    )) ?>">
+                    <?= $this->translate('E-Mail', 'AllcopOrderManagement') ?>
+                </a>
+            <?php else: ?>
+                <a class="interactive-sort email" href="<?=
+                $this->url($stdUrl,
+                    array(
+                        'action' => 'index',
+                        'page' => $this->currentPage,
+                        'orderby' => 'email',
+                        'order' => $orderDirection,
+                        'results' => $this->resultsPerPage
+                    )) ?>">
+                    <?= $this->translate('E-Mail', 'AllcopOrderManagement') ?>
+                </a>
+            <?php endif; ?>
+        </th>
+        <th>
+            <?php if ($this->search != null): ?>
+                <a class="interactive-sort total" href="<?=
+                $this->url($searchUrl,
+                    array(
+                        'action' => 'index',
+                        'page' => $this->currentPage,
+                        'orderby' => 'total',
+                        'order' => $orderDirection,
+                        'search' => $this->search,
+                        'results' => $this->resultsPerPage
+                    )) ?>">
+                    <?= $this->translate('Total', 'AllcopOrderManagement') ?>
+                </a>
+            <?php else: ?>
+                <a class="interactive-sort total" href="<?=
+                $this->url($stdUrl,
+                    array(
+                        'action' => 'index',
+                        'page' => $this->currentPage,
+                        'orderby' => 'total',
+                        'order' => $orderDirection,
+                        'results' => $this->resultsPerPage
+                    )) ?>">
+                    <?= $this->translate('Total', 'AllcopOrderManagement') ?>
+                </a>
+            <?php endif; ?>
+        </th>
+        <th>
+            <?php if ($this->search != null): ?>
+                <a class="interactive-sort paymentcode" href="<?=
+                $this->url($searchUrl,
+                    array(
+                        'action' => 'index',
+                        'page' => $this->currentPage,
+                        'orderby' => 'paymentcode',
+                        'order' => $orderDirection,
+                        'search' => $this->search,
+                        'results' => $this->resultsPerPage
+                    )) ?>">
+                    <?= $this->translate('Payment-Code', 'AllcopOrderManagement') ?>
+                </a>
+            <?php else: ?>
+                <a class="interactive-sort paymentcode" href="<?=
+                $this->url($stdUrl,
+                    array(
+                        'action' => 'index',
+                        'page' => $this->currentPage,
+                        'orderby' => 'paymentcode',
+                        'order' => $orderDirection,
+                        'results' => $this->resultsPerPage
+                    )) ?>">
+                    <?= $this->translate('Payment-Code', 'AllcopOrderManagement') ?>
+                </a>
+            <?php endif; ?>
+        </th>
+        <th>
+            Ungnadner Link
+        </th>
+        <?php if (in_array('AllcopOrderManagement_Edit', $userPermissions)): ?>
+            <th class="column-options"><?= $this->translate('Options', 'AllcopOrderManagement') ?></th>
+        <?php endif; ?>
+        </tr>
+        </thead>
+        <tbody>
+
+        <?php foreach ($this->pagination->getItems() as $orderManagement): ?>
+            <?php $currentOrderId = $orderManagement['ORDERID']; ?>
+            <?php
+            if ($this->search != null) {
+                $orderManagement['PORTALID'] = $this->AllcopCore_Helper_TextHighlight($this->search, $orderManagement['PORTALID']);
+                $orderManagement['ORDERID'] = $this->AllcopCore_Helper_TextHighlight($this->search, $orderManagement['ORDERID']);
+                $orderManagement['EMAIL'] = $this->AllcopCore_Helper_TextHighlight($this->search, $orderManagement['EMAIL']);
+                $orderManagement['FIRSTNAME'] = $this->AllcopCore_Helper_TextHighlight($this->search, $orderManagement['FIRSTNAME']);
+                $orderManagement['LASTNAME'] = $this->AllcopCore_Helper_TextHighlight($this->search, $orderManagement['LASTNAME']);
+            }
+            ?>
+            <tr>
+                <td><?= $orderManagement['PORTALID'] ?></td>
+                <td><?= $orderManagement['ORDERID'] ?></td>
+                <td><?php
+                    $year = substr($orderManagement['TRANSMITTED'], 0, 4);
+                    $month = substr($orderManagement['TRANSMITTED'], 4, 2);
+                    $day = substr($orderManagement['TRANSMITTED'], 6, 2);
+                    $hour = substr($orderManagement['TRANSMITTED'], 8, 2);
+                    $minute = substr($orderManagement['TRANSMITTED'], 10, 2);
+                    $second = substr($orderManagement['TRANSMITTED'], 12, 2); #
+
+                    $orderManagement['TRANSMITTED'] = $day . '.' . $month . '.' . $year . ' ' . $hour . ':' . $minute . ':' . $second;
+                    ?>
+                    <?= $orderManagement['TRANSMITTED'] ?></td>
+                <td><?= $orderManagement['FIRSTNAME'] ?></td>
+                <td><?= $orderManagement['LASTNAME'] ?></td>
+                <td><?= $orderManagement['EMAIL'] ?></td>
+                <td>
+                    <?php if ($orderManagement['TOTAL'] != 0) { ?>
+                        <?php
+                        if (strpos($orderManagement['TOTAL'], '.')) {
+                            $omValue = explode(".", $orderManagement['TOTAL']);
+                            if (strlen($omValue[1]) == 1) {
+                                $orderManagement['TOTAL'] = $orderManagement['TOTAL'] . 0;
+                            }
+                            $orderManagement['TOTAL'] = str_replace('.', ',', $orderManagement['TOTAL']);
+                        } else {
+                            $orderManagement['TOTAL'] = $orderManagement['TOTAL'] . ',00';
+                        }
+                        ?>
+                        <?= $orderManagement['TOTAL'] . ' €' ?>
+                    <?php } else { ?>
+                        0,00 €
+                    <?php } ?>
+                </td>
+                <td>
+                    <?php if ($orderManagement['PAYMENTCODE'] == "IN"): ?>
+                        <span
+                            class="badge badge-success"><?= $this->translate('Invoice', 'AllcopOrderManagement') ?></span>
+                    <?php endif; ?>
+                    <?php if ($orderManagement['PAYMENTCODE'] == "KL"): ?>
+                        <span
+                            class="badge badge-info"><?= $this->translate('Klarna', 'AllcopOrderManagement') ?></span>
+                    <?php endif; ?>
+                    <?php if ($orderManagement['PAYMENTCODE'] == "PP"): ?>
+                        <span
+                            class="badge badge-warning"><?= $this->translate('PayPal', 'AllcopOrderManagement') ?></span>
+                    <?php endif; ?>
+
+
+                </td>
+                <td>
+                    <?php
+                        $ungnadnerLink = "http://192.168.31.20/web/w051.php?org_wwwnr=" . $currentOrderId;
+                        echo "<a href=" . $ungnadnerLink . " target='_blank'>Zum Auftrag</a>";
+                    ?>
+                </td>
+                <?php
+                    $params = $orderManagement['BASKETHEADERID'] . "|" . $this->currentPage . "|" . $orderDirection . "|" . $this->search . "|" . $orderby;
+                ?>
+                <td class="column-options">
+                    <div class="options btn-group">
+                        <a class="btn btn-small dropdown-toggle" data-toggle="dropdown" href="#"><i
+                                class="icon-cog"></i><?= $this->translate('Options', 'AllcopOrderManagement') ?></a>
+                        <ul class="dropdown-menu">
+                            <?php if (in_array('AllcopOrderManagement_Edit', $userPermissions)): ?>
+                                <li>
+                                    <a class="interactive-edit"
+                                       href="<?php echo $this->url($optionUrl,
+                                           array('action' => 'edit',
+                                               'basketheaderid' => $params)); ?>"><i
+                                            class="icon-pencil"></i>
+                                        <?= $this->translate('Edit', 'AllcopProduct') ?>
+                                    </a>
+                                </li>
+                            <?php endif; ?>
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+        </tbody>
+        </table>
+        <div id="pagination-control pagination" class="pagination-allcopiam">
+            <div class="pagination pagination-centered">
+                <?php echo $this->partial('layout/pagination-control/ordermanagement/pagination-control-ordermanagements.phtml',
+                    array(
+                        'pagination' => $this->AllcopCore_Helper_PaginationControl($this->pagination),
+                        'orderby' => $this->orderby,
+                        'order' => $this->order,
+                        'search' => $this->search,
+                        'results' => $this->resultsPerPage
+                    )); ?>
+            </div>
+            <div id="pagination-description">
+                <?= $this->translate('Page') ?> <?= $this->pagination->getCurrentPageNumber() ?>
+                <?= $this->translate('of') ?> <?= $this->pagination->getMaxPage() ?>
+                (<?= $this->pagination->getTotalItemCount() ?> <?php echo ($this->pagination->getTotalItemCount() > 1) ? $this->translate('Results', 'AllcopOrderManagement') : $this->translate('Result', 'AllcopOrderManagement') ?>
+                )
+            </div>
+        </div>
+    <?php else: ?>
+        <p class="padding-active">
+        <?php if ($this->search != null): ?>
+            <?= $this->translate('Could not find a result matching your search criteria.', 'AllcopOrderManagement'); ?>
+        <?php else : ?>
+            <div style="font-weight:bold;text-align: center;padding:20px;font-size: 18px;padding-top: 10%;padding-bottom: 10%;">
+                Benutzen Sie die Suche um Daten für die Auftragsverwaltung zu finden. <br/> Bestätigen Sie diese mit der Enter-Taste.
+                <br/>
+                <br/>
+            </div>
+        <?php endif; ?>
+        </p>
+    <?php endif; ?>
+<?php else: ?>
+    <p class="padding-active">
+    <?php if ($this->search != null): ?>
+        <?= $this->translate('Could not find a result matching your search criteria.', 'AllcopOrderManagement'); ?>
+    <?php else : ?>
+        <div style="font-weight:bold;text-align: center;padding:20px;font-size: 18px;padding-top: 10%;padding-bottom: 10%;">
+            Benutzen Sie die Suche um Daten für die Auftragsverwaltung zu finden. <br/> Bestätigen Sie diese mit der Enter-Taste.
+            <br/>
+            <br/>
+        </div>
+    <?php endif; ?>
+    </p>
+<?php endif; ?>
+</div>
+</div>
+<script id="script-sort">
+
+    $('.action-navbutton').on('click', function () {
+        var href = $(this).attr('data-href');
+        window.location = href;
+    });
+
+    $('.interactive-sort.<?= $this->orderby ?>').toggleClass('sort-active <?= strtolower($this->order) ?>');
+
+    var delay = (function () {
+        var timer = 0;
+        return function (callback, ms) {
+            clearTimeout(timer);
+            timer = setTimeout(callback, ms);
+        };
+    })();
+
+    $('select.selectpicker-results').on('change', function () {
+        var url = $('select.selectpicker-results option:selected').attr('data-url');
+        document.location.href = url;
+    });
+
+    /**
+     * product grid searchbox
+     */
+    $('#search-ordermanagement').keydown(function (e) {
+        if (e.keyCode == 13) {
+            delay(function () {
+                var submit = $('#filter-search-submit');
+                var url = submit.attr('data-href');
+
+                if ($('input[name="filter-search"]').val() != '') {
+                    var url_append = url + "/search/" + $('input[name="filter-search"]').val() + "/submitted/true";
+                } else {
+                    var url_append = url + "/search/_nosearch_/submitted/true";
+                }
+
+                $.ajax({
+                    url: url_append,
+                    cache: false
+                }).done(function (html) {
+                        $('.window .xhr-content').html(html);
+                        $('select.selectpicker-results').selectpicker();
+                        $('table.interactive tbody tr').on('dblclick', function () {
+                            document.location = $(this).find('ul.dropdown-menu a').first().attr('href');
+                        });
+                    });
+            }, 200);
+        }
+    });
+</script>
