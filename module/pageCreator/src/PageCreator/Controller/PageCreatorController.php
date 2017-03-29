@@ -1,20 +1,13 @@
 <?php
-/**
- * Controller OrderManagement
- *
- * The OrderMangementController covers several base actions
- * executed for actions with order management.
- *
- * @package OrderMangement
- * @author  Christian Durak <durak@allcop.de>
- */
-namespace AllcopOrderManagement\Controller;
+
+namespace PageCreator\Controller;
 
 //use PageCreator\Entity\PageCreator as EntityPageCreator;
 
+use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
-class PageCreatorController
+class PageCreatorController extends AbstractActionController
 {
 
     /**

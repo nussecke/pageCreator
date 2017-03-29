@@ -3,7 +3,7 @@ return array(
     # ------------------------------- CONTROLLERS ------------------------------- #
     'controllers' => array(
         'invokables' => array(
-            'PageCreator\Controller\PageCreatorController' => 'PageCreator\Controller\PageCreatorController',
+            'PageCreator\Controller\PageCreator' => 'PageCreator\Controller\PageCreatorController',
         ),
     ),
     # ------------------------------- ROUTER ------------------------------- #
@@ -16,7 +16,7 @@ return array(
                     'route' => '/pagecreator',
                     'constraints' => array(),
                     'defaults' => array(
-                        'controller' => 'PageCreatorController\Controller\PageCreatorController',
+                        'controller' => 'PageCreator\Controller\PageCreator',
                         'action' => 'index',
                     ),
                 ),
