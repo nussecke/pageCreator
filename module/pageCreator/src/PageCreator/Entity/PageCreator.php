@@ -13,8 +13,10 @@ class PageCreator implements BaseModelInterface, InputFilterAwareInterface
      * @var int
      */
     public $id;
+
     public $title;
 
+    public $active;
 
     protected $inputFilter;
 
@@ -26,6 +28,7 @@ class PageCreator implements BaseModelInterface, InputFilterAwareInterface
     {
         $this->id     = (!empty($data['id'])) ? $data['id'] : null;
         $this->title = (!empty($data['title'])) ? $data['title'] : null;
+        $this->active = (!empty($data['active'])) ? $data['active'] : null;
     }
 
     /**

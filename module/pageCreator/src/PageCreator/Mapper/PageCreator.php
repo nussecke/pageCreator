@@ -29,7 +29,7 @@ class PageCreator implements BaseModelTableInterface
     public function fetchAll()
     {
         $resultSet = $this->tableGateway->select();
-        return $resultSet;
+        return $resultSet->buffer();
     }
 
     /**
@@ -61,6 +61,7 @@ class PageCreator implements BaseModelTableInterface
     {
         $data = array(
             'title' => $data->title,
+            'active' => $data->active,
         );
 
         $id = (int)$data->id;

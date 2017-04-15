@@ -2,28 +2,106 @@
     <div class="clearfix alert alert-success">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
         <?php foreach ($this->flashMessenger()->getSuccessMessages() as $message) ?>
-        <strong>Erfolg</strong><br/>
-        <?=$message ?>
+            <strong>Erfolg</strong><br/>
+        <?= $message ?>
     </div>
 <?php endif; ?>
 <?php if ($this->flashMessenger()->hasErrorMessages()) : ?>
     <div class="clearfix alert alert-error">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
         <?php foreach ($this->flashMessenger()->getErrorMessages() as $message) ?>
-        <strong>Error</strong><br/>
-        <?=$message ?>
+            <strong>Error</strong><br/>
+        <?= $message ?>
     </div>
 <?php endif; ?>
 
-<div class="headerbar-wrapper" >
-    <div class="headerbar">
+<div id="headerbar-wrapper">
+    <div id="headerbar">
         <div class="pull-right">
-            <a class="btn btn-success" href="/pagecreator/add">
-                <span class="glyphicon glyphicon-plus fa-1x" aria-hidden="true"></span> Website erstellen</a>
+            <button type="button" class="btn btn-warning" onclick="Pagecreator.UI.Utils.goBack()" data-href="#">Zurück
+            </button>
+            <button type="button" class="btn btn-success"
+                    href="<?php echo $this->url('pagecreator', array('action' => 'add')); ?>">
+                <span class="glyphicon glyphicon-plus fa-1x" aria-hidden="true"></span> Neues Template erstellen
+            </button>
         </div>
     </div>
-    <!-- end .headerbar -->
-    <div style="display: block; width: 100%; height: 47px; float: none;"></div>
 </div>
 
-Now this is a story over Belair
+<?php
+$title = 'Page Übersicht';
+$this->headTitle($title);
+?>
+
+<div class="window">
+    <div class="xhr-loading"></div>
+    <div class="xhr-content">
+        <div class="article-main">
+            <?php if (!empty($pages)): ?>
+            <?php foreach ($pages as $page) : ?>
+                <div class="article-parent-box">
+                    <div class="article-box span4">
+                        <div class="id-container">
+                            <div class="pull-left">
+                                ID: <?= $page->id ?>
+                            </div>
+                            <div class="pull-right">
+                                <?php if ($page->active): ?>
+                                    <span class="label label-success">Aktiv</span>
+                                <?php else: ?>
+                                    <span class="label label-danger">Inaktiv</span>
+                                <?php endif; ?>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="article-header">
+                            <?= $page->title ?>
+                        </div>
+                        <div class="article-inner-content">
+                            <div class="span5">
+                                <div class="article-text" style="width: 375px;">
+                                    <br/>
+
+                                    <div class="rendered-description-with-style">
+                                        blablub
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="article-bottom">
+                            <div class="article-price"></div>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Optionen <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a href="<?php echo $this->url('pagecreator',
+                                            array('action' => 'edit', 'id' => $page->id));?>"><span
+                                                class="glyphicon glyphicon-pencil fa-1x"></span>Edit</a>
+                                    </li>
+                                    <li>
+                                        <a href="<?php echo $this->url('pagecreator',
+                                            array('action' => 'delete', 'id' => $page->id));?>"><span
+                                                class="glyphicon glyphicon-remove fa-1x"></span>Delete</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+            <div class="clearfix"></div>
+        </div>
+        <?php else: ?>
+            <p class="padding-active">
+                Es wurden noch keine Page Templates angelegt.
+            </p>
+        <?php
+        endif;
+        ?>
+    </div>
+</div>

@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <?php echo $this->headTitle('ZF2 ' . $this->translate('Skeleton Application'))->setSeparator(' - ')->setAutoEscape(false) ?>
+    <?php echo $this->headTitle()->setAutoEscape(false) ?>
 
     <?php echo $this->headMeta()
         ->appendName('viewport', 'width=device-width, initial-scale=1.0')
@@ -18,6 +18,8 @@
 
     <!-- Scripts -->
     <?php echo $this->headScript()
+        ->prependFile($this->basePath('js/Pagecreator.UI.Utils.js'))
+        ->prependFile($this->basePath('js/Pagecreator.js'))
         ->prependFile($this->basePath('js/bootstrap.min.js'))
         ->prependFile($this->basePath('js/jquery.min.js'))
         ->prependFile($this->basePath('js/respond.min.js'), 'text/javascript', array('conditional' => 'lt IE 9',))
@@ -53,5 +55,9 @@
     <!-- /container -->
     <?php echo $this->inlineScript() ?>
 </div>
+
+<script>
+    $("#main-container").css("top", $("#header-container").outerHeight() + $("#headerbar").outerHeight());
+</script>
 </body>
 </html>

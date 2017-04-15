@@ -23,11 +23,22 @@ class PageCreatorController extends AbstractActionController
      */
     public function indexAction()
     {
-        $view = new ViewModel();
+        return new ViewModel(array(
+            'pages' => $this->getPageCreatorMapper()->fetchAll(),
+        ));
+    }
 
-        $view->setVariables(array());
+    public function addAction()
+    {
 
-        return $view;
+    }
+
+    public function editAction()
+    {
+    }
+
+    public function deleteAction()
+    {
     }
 
     /**
@@ -35,12 +46,10 @@ class PageCreatorController extends AbstractActionController
      *
      * @return \PageCreator\Mapper|null
      */
-    public
-    function getPageCreatorMapper()
-    {
+    public function getPageCreatorMapper() {
         if (!$this->pageCreatorMapper) {
             $sm = $this->getServiceLocator();
-            $this->pageCreatorMapper = $sm->get('PageCreator\Mapper');
+            $this->pageCreatorMapper = $sm->get('PageCreator\Mapper\PageCreator');
         }
         return $this->pageCreatorMapper;
     }
